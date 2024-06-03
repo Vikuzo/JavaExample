@@ -2,6 +2,7 @@
 package source; // package del mio workspace, per invocare package esterni devo importarli ---> import packageName.className (se voglio specificare) --> * per intendere tutto
 
 import java.util.*;
+import customExp.*; // package in cui inserisco i miei errori custom
 
 // la visibilità della classe determina se sarà visibile solo all'interno del package o anche dalle classi che importano quel package 
 public class University{
@@ -39,32 +40,44 @@ public class University{
 
     // metodi funzionali
     // metodo per aggiungere uno studente all'università
-    public Student studentEnroll(Person p){
-        // controllo di non aver superato il limite di studenti
-        if(students.size() > MAX_STUDENTS)
-            return null;
-
+    public Student studentEnroll(Person p) throws StudentExp{
         Student s = new Student(p, STUDENT_STARTID + students.size());
+        // controllo di non aver superato il limite di studenti
+        if(students.size() >= MAX_STUDENTS)
+            throw(new StudentExp("Non è possibile inserire nuovi studenti", s));
+
         students.add(s);
         return s;
     }
 
     // metodo per aggiungere un insegnante all'università
-    public Teacher teacherEnroll(Person p){
-        if(teachers.size() > MAX_TEACHERS)
-            return null;
+    // in questo caso implemento un errore già dichiarato nelle librerie di base di java
+    /*public Teacher teacherEnroll(Person p) throws NullPointerException{ // attraverso la keyword THROWS definisco gli errori che il mio metodo potrebbe innalzare
+        if(teachers.size() >= MAX_TEACHERS)
+            throw (new NullPointerException("Non è possibile inserire ulteriori insegnanti")); // una volta giunto nella parte di codice problematica innalzo un nuovo errore di
+                                                                                                // ti tipo NullPointerException (specifico del mio caso) --> CHECKED EXCEPTION
 
         Teacher t = new Teacher(p, TEACHER_STARTID + teachers.size());
+        teachers.add(t);
+        return t;
+    }*/
+
+    // in questo caso utilizzo un errore CUSTOM (personalizzato)
+    public Teacher teacherEnroll(Person p) throws TeacherExp{
+        Teacher t = new Teacher(p, TEACHER_STARTID + teachers.size());
+        if(teachers.size() >= MAX_TEACHERS)
+            throw (new TeacherExp("Non è possibile inserire ulteriori insegnanti", t)); 
+
         teachers.add(t);
         return t;
     }
 
     // metodo per aggiungere un corso all'università
-    public Course courseEnroll(String name){
-        if(courses.size() > MAX_COURSE)
-            return null;
-
+    public Course courseEnroll(String name) throws CourseExp{
         Course c = new Course(name, COURSE_STARTID + courses.size());
+        if(courses.size() >= MAX_COURSE)
+            throw(new CourseExp("Non è possibile inserire ulteriori corsi", c));
+
         courses.add(c);
         return c;
     }
