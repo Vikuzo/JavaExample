@@ -7,7 +7,7 @@ public class Main{
     // ---> Utility.inverse(10). E' possibile importare tutti gli oggetti statici di una classe --> import static package.Utility.* 
     public static void main(String[] args){
         // l'operatore NEW mi permette di creare un nuovo oggetto di tipo University
-        University uni = new University("Politecnico di Torino");
+        //University uni = new University("Politecnico di Torino");
 
         // System.out.println(uni.getName());
         // o, avendo modificato toString
@@ -27,7 +27,6 @@ public class Main{
         // System.out.println(uni.getStudentsOrderedByID());
         // System.out.println(uni.getStudentsOrderedByName());
 
-        // DICHIARAZIONE INSEGNANTI
         Person p3 = new Person("Stefano", "Bianco");
         Person p4 = new Person("Silvia Anna", "Chiusano");
 
@@ -44,6 +43,8 @@ public class Main{
         uni.associateCourseToTeacher(101, 12);
         System.out.println(uni.getCoursesOfTeacher(uni.getTeacherByID(101)));*/
 
+
+
         // PROVE CON EXCEPTION, ho impostato il massimo di insegnanti a 2
         // se possibile evitare di utilizzare TRY{}CATCH{} nel main ma meglio direttamente negli oggetti
 
@@ -59,7 +60,7 @@ public class Main{
         System.out.println(uni.getTeachersOrderedByName());*/
 
         // nel caso di utilizzo di un errore custom devo inserire ASSOLUTAMENTE i metodi che possono generarlo in un TRY{}CATCH{} ---> ???
-        try{
+        /*try{
             uni.studentEnroll(p1); uni.studentEnroll(p2);
             uni.teacherEnroll(p3); uni.teacherEnroll(p4); uni.teacherEnroll(p5);
             uni.courseEnroll("Basi di dati"); uni.courseEnroll("Fisica I"); uni.courseEnroll("Big Data");
@@ -73,7 +74,16 @@ public class Main{
             System.out.println(ce);
         }
 
-        System.out.println(uni.getTeachersOrderedByName());
+        System.out.println(uni.getTeachersOrderedByName());*/
+
+
+
+        // FLUENT BUILDER
+        /*University university = new UniversityBuilder("Politecnico di Torino").addStudents(p1, p2).addCourses("Basi di dati", "Fisica I", "Big Data")
+        .addTeachers(p3, p4).withCourses(100, 11).withCourses(101, 10, 12).getUniversity();
+        // questo builder non è affatto ottimale e non sfrutta la possiblità di legare razionalmente i vari metodi ma da un'idea generale di cosa si può fare
+
+        System.out.println(university.getTeachersOrderedByName());*/
 
     }
 }

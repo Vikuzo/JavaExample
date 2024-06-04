@@ -92,7 +92,8 @@ public class University{
             t = getTeacherByID(teacherID);
             c = getCourseByID(courseID);
         }catch(TeacherExp te){
-            throw te;
+            throw te; // in questo caso stiamo effettuando propagazione (dispatch) dell'errore a codice più in alto (l'errore in questo caso è sempre causato dai metodi che stiamo chiamando
+                    // e non direttamente da questo)
         }catch(CourseExp ce){
             throw ce;
         }
@@ -118,7 +119,7 @@ public class University{
                 return t;
         }
 
-        throw(new TeacherExp("Non c'è nessun professore con questo ID", null));
+        throw(new TeacherExp("Non c'è nessun professore con questo ID", null)); // in questo caso stiamo facendo  error signaling ---> informiamo la funzione chiamante di un'anomalia
     }
 
     public Course getCourseByID(int ID) throws CourseExp{
