@@ -13,7 +13,7 @@ public class University{
     public static final int MAX_TEACHERS = 100; // anche per loro potrebbe valere quanto detto sotto ma li tratterò come static per usarli come esempio
     public static final int MAX_COURSE = 50;
 
-    private final int STUDENT_STARTID = 1000; // non li dichiariamo public static perché in questo caso li abbiamo dichiarati esplicitamente ma tipicamente, in un'applicazione reale
+    private final int STUDENT_STARTID = 1000; // non li dichiariamo PUBLIC STATIC perché in questo caso li abbiamo dichiarati esplicitamente ma tipicamente, in un'applicazione reale
     private final int TEACHER_STARTID = 100; // questi valori non sono fissi, possono cambiare nel tempo e dipendeno, inoltre, dalla singola istanza di università che li genera
     private final int COURSE_STARTID = 10;
 
@@ -83,9 +83,19 @@ public class University{
     }
 
     // metodo per associare un corso ad un insegnante
-    public void associateCourseToTeacher(int teacherID, int courseID){
-        Teacher t = getTeacherByID(teacherID);
-        Course c = getCourseByID(courseID);
+    public void associateCourseToTeacher(int teacherID, int courseID) throws TeacherExp, CourseExp{
+        Teacher t;
+        Course c;
+        
+        try{ // in questo caso a prescindera da quale sia l'eccezione l'esecuzione del mio metodo è interrotta quindi, essendo comunque fra loro gli errori completamente separati,
+            // non mi interessa separare i due TRY{}CATCH{}
+            t = getTeacherByID(teacherID);
+            c = getCourseByID(courseID);
+        }catch(TeacherExp te){
+            throw te;
+        }catch(CourseExp ce){
+            throw ce;
+        }
 
         if(coursesOfTeacher.containsKey(t)){
             Set<Course>courses = coursesOfTeacher.get(t);
@@ -102,29 +112,30 @@ public class University{
     public String getName(){return name;}
     public void setName(String name){this.name = name;}
 
-    public Teacher getTeacherByID(int ID){
+    public Teacher getTeacherByID(int ID) throws TeacherExp{
         for(Teacher t: teachers){
             if(t.getTeacherID() == ID)
                 return t;
         }
 
-        return null;
+        throw(new TeacherExp("Non c'è nessun professore con questo ID", null));
     }
 
-    public Course getCourseByID(int ID){
+    public Course getCourseByID(int ID) throws CourseExp{
         for(Course c: courses){
             if(c.getCourseID() == ID)
                 return c;
         }
 
-        return null;
+        throw(new CourseExp("Non c'è nessun corso con questo ID", null));
     }
 
     public Set<Course> getCoursesOfTeacher(Teacher t){
         return coursesOfTeacher.get(t);
     }
 
-    // per definizione, anche se il SET non è di per sé automaticamente in ordine, per modalità di inserimento i miei studenti saranno ordinati per ID
+    // per definizione (in quanto LinkedHashSet), anche se il SET non è di per sé automaticamente in ordine, per modalità di inserimento i miei studenti saranno ordinati per ID
+    // Tutte le funzioni seguenti non prevedono di ordinare la lista già esistente ma di creare una nuova versione ordinata così da la COLLECTION di origine 
     public Set<Student> getStudentsOrderedByID(){return students;}
 
     public Set<Student> getStudentsOrderedByName(){

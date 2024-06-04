@@ -6,7 +6,10 @@ public class StudentExp extends Exception{
     private Student student;
 
     public StudentExp(String msg, Student s){
-        super(msg); student = s;
+        super(msg); 
+        
+        if(student== null){student = new Student("NO", "STUDENT", -1);}
+        else{student = s;}
     }
 
     @Override

@@ -1,8 +1,6 @@
 package source;
 
-import customExp.CourseExp;
-import customExp.StudentExp;
-import customExp.TeacherExp;
+import customExp.*;
 
 public class Main{
     // I metodi statici non sono legati a nessuna istanza, permettono di non generare un oggetto solo per utilizzare un metodo, sono accessibili solo utilizzando la classe 
@@ -65,6 +63,7 @@ public class Main{
             uni.studentEnroll(p1); uni.studentEnroll(p2);
             uni.teacherEnroll(p3); uni.teacherEnroll(p4); uni.teacherEnroll(p5);
             uni.courseEnroll("Basi di dati"); uni.courseEnroll("Fisica I"); uni.courseEnroll("Big Data");
+            uni.getTeacherByID(55);
         }catch(StudentExp se){ // costrutto TRY{}CATCH{} con molteplici CATCH se ci sono più eccezioni la prima sarà considerata --> in questo caso ogni eccezione è troppo specifica
                               // per essere gestita in questo modo ma si tratta di un esempio [un eccezione in Student blocca completamente anche le altre operazioni!!]
             System.out.println(se);

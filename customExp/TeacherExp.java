@@ -7,7 +7,9 @@ public class TeacherExp extends Exception{
 
     public TeacherExp(String msg, Teacher t){
         super(msg);
-        teacher = t;
+
+        if(teacher == null){teacher = new Teacher("NO", "TEACHER", -1);} // l'implementazione dell'handling di questo errore lascia molto a desiderare
+        else{teacher = t;}
     }
 
     @Override
