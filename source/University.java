@@ -2,7 +2,10 @@
 package source; // package del mio workspace, per invocare package esterni devo importarli ---> import packageName.className (se voglio specificare) --> * per intendere tutto
 
 import java.util.*;
-import customExp.*; // package in cui inserisco i miei errori custom
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
+// import customExp.*; // package in cui inserisco i miei errori custom
 
 // la visibilità della classe determina se sarà visibile solo all'interno del package o anche dalle classi che importano quel package 
 public class University{
@@ -23,10 +26,10 @@ public class University{
                          il contenuto meglio StringBuffer */
     private Set<Student> students = new LinkedHashSet<Student>(); // non esiste una implementazione di SET semplicemente Set() 
                                                                 // utilizzo SET perché non voglio duplicati
-    private Set<Teacher> teachers = new LinkedHashSet<Teacher>();
+    // private Set<Teacher> teachers = new LinkedHashSet<Teacher>();
     private Set<Course> courses = new LinkedHashSet<Course>();
 
-    private Map<Teacher, Set<Course>> coursesOfTeacher = new HashMap<Teacher,Set<Course>>(); // uso una mappa per associare un insegnante ai corsi in cui insegna, le hashmap non hanno
+    // private Map<Teacher, Set<Course>> coursesOfTeacher = new HashMap<Teacher,Set<Course>>(); // uso una mappa per associare un insegnante ai corsi in cui insegna, le hashmap non hanno
                                                                                             // un ordine particolare
 
     // costruttori
@@ -40,11 +43,21 @@ public class University{
 
     // metodi funzionali
     // metodo per aggiungere uno studente all'università
-    public Student studentEnroll(Person p) throws StudentExp{
+    /*public Student studentEnroll(Person p) throws StudentExp{
         Student s = new Student(p, STUDENT_STARTID + students.size());
         // controllo di non aver superato il limite di studenti
         if(students.size() >= MAX_STUDENTS)
             throw(new StudentExp("Non è possibile inserire nuovi studenti", s));
+
+        students.add(s);
+        return s;
+    }*/
+
+    public Student studentEnroll(Person p){
+        Student s = new Student(p, STUDENT_STARTID + students.size());
+        // controllo di non aver superato il limite di studenti
+        if(students.size() >= MAX_STUDENTS)
+            return null;
 
         students.add(s);
         return s;
@@ -63,27 +76,36 @@ public class University{
     }*/
 
     // in questo caso utilizzo un errore CUSTOM (personalizzato)
-    public Teacher teacherEnroll(Person p) throws TeacherExp{
+    /*public Teacher teacherEnroll(Person p) throws TeacherExp{
         Teacher t = new Teacher(p, TEACHER_STARTID + teachers.size());
         if(teachers.size() >= MAX_TEACHERS)
             throw (new TeacherExp("Non è possibile inserire ulteriori insegnanti", t)); 
 
         teachers.add(t);
         return t;
-    }
+    }*/
 
     // metodo per aggiungere un corso all'università
-    public Course courseEnroll(String name) throws CourseExp{
-        Course c = new Course(name, COURSE_STARTID + courses.size());
+    /*public Course courseEnroll(String name, boolean written, boolean oral) throws CourseExp{
+        Course c = new Course(name, COURSE_STARTID + courses.size(), written, oral);
         if(courses.size() >= MAX_COURSE)
             throw(new CourseExp("Non è possibile inserire ulteriori corsi", c));
+
+        courses.add(c);
+        return c;
+    }*/
+
+    public Course courseEnroll(String name, boolean written, boolean oral){
+        Course c = new Course(name, COURSE_STARTID + courses.size(), written, oral);
+        if(courses.size() >= MAX_COURSE)
+            return null;
 
         courses.add(c);
         return c;
     }
 
     // metodo per associare un corso ad un insegnante
-    public void associateCourseToTeacher(int teacherID, int courseID) throws TeacherExp, CourseExp{
+    /*public void associateCourseToTeacher(int teacherID, int courseID) throws TeacherExp, CourseExp{
         Teacher t;
         Course c;
         
@@ -107,22 +129,47 @@ public class University{
             courses.add(c);
             coursesOfTeacher.put(t, courses);
         }
+    }*/
+
+    public void associateStudentToCourse(int studentID, int courseID){
+        Course c = getCourseByID(courseID);
+        c.addStudent(getStudentByID(studentID));
+    }
+
+    public void courseFlatMapping(){ // .map() permette di rimappare uno stream di elementi su una collezione di oggetti ad essi associati Set<Course> --> Stream<Course> --> Stream<Collection<Student>>
+                                    // .flatMap() permette di ridurre lo stream di una COLLECTION allo stream degli elementi che la compongono Stream<Colletcion<Student>> --> Stream<Student>
+                                    // il successivo .map() mappa i miei SINGOLI elementi nel nome del metodo getName Stream<Student> --> Stream<String>
+        courses.stream().map(Course::getStudents).flatMap(Set::stream).map(Student::getName).forEach(System.out::println);
     }
 
     // getters e setters
     public String getName(){return name;}
     public void setName(String name){this.name = name;}
 
-    public Teacher getTeacherByID(int ID) throws TeacherExp{
+    public String getStudentGrade(int studentID, int courseID){
+        return getCourseByID(courseID).getStudentGrade(studentID);
+    }
+
+    public void setStudentGrade(int studentID, int courseID, int grade){
+        getCourseByID(courseID).addStudentGrade(studentID, grade);
+    }
+
+    public Student getStudentByID(int studentID){
+        Predicate<Student> p = s -> s.getStudentID() == studentID;
+        List<Student> student = students.stream().filter(p).toList(); // non utilissimo per cercare un singolo studente, non ci sono conversioni dirette in tipo CUSTOM
+        return student.get(0);
+    }
+
+    /*public Teacher getTeacherByID(int ID) throws TeacherExp{
         for(Teacher t: teachers){
             if(t.getTeacherID() == ID)
                 return t;
         }
 
         throw(new TeacherExp("Non c'è nessun professore con questo ID", null)); // in questo caso stiamo facendo  error signaling ---> informiamo la funzione chiamante di un'anomalia
-    }
+    }*/
 
-    public Course getCourseByID(int ID) throws CourseExp{
+    /*public Course getCourseByID(int ID) throws CourseExp{
         for(Course c: courses){
             if(c.getCourseID() == ID)
                 return c;
@@ -133,13 +180,27 @@ public class University{
 
     public Set<Course> getCoursesOfTeacher(Teacher t){
         return coursesOfTeacher.get(t);
+    }*/
+
+    public Course getCourseByID(int ID){
+        for(Course c: courses){
+            if(c.getCourseID() == ID)
+                return c;
+        }
+        return null;
     }
 
     // per definizione (in quanto LinkedHashSet), anche se il SET non è di per sé automaticamente in ordine, per modalità di inserimento i miei studenti saranno ordinati per ID
     // Tutte le funzioni seguenti non prevedono di ordinare la lista già esistente ma di creare una nuova versione ordinata così da la COLLECTION di origine 
-    public Set<Student> getStudentsOrderedByID(){return students;}
+    // public Set<Student> getStudentsOrderedByID(){return students;}
+    public Stream<Student> getStudentsOrderedByID(){// versione di getStudentsOrderedByID che fa utilizza gli STREAM
+        Comparator<Student> c; // non necessario ai fini di ciò che stiamo facendo ma fondamentalmente stiamo dicendo che sono accettati tutti i tipi che ereditano da Student
+        c = (a,b) -> {return a.getStudentID() - b.getStudentID();};
 
-    public Set<Student> getStudentsOrderedByName(){
+        return students.stream().sorted(c);
+    }
+
+    /*public Set<Student> getStudentsOrderedByName(){
         // LAMBDA FUNCTION per dichiarare il comparator da passare alla mio set ordinao TreeSet(c)
         Comparator<Student> c = (a, b) -> {
             if(a.getSurname().compareTo(b.getSurname()) == 0){return a.getName().compareTo(b.getName());}else{return a.getSurname().compareTo(b.getSurname());}
@@ -148,11 +209,14 @@ public class University{
         Set<Student> students = new TreeSet<Student>(c);
         students.addAll(this.students);
         return students;
-    }
+    }*/
 
-    public Set<Teacher> getTeachersOrderedByID(){return teachers;}
+    // public Set<Teacher> getTeachersOrderedByID(){return teachers;}
 
-    public Set<Teacher> getTeachersOrderedByName(){
+    // ritorniamo lo STREAM dei teacher
+    // public Stream<Teacher> getTeachersStream(){return teachers.stream();}
+
+    /*public Set<Teacher> getTeachersOrderedByName(){
         Comparator<Teacher> c = (a, b) -> {
             if(a.getSurname().compareTo(b.getSurname()) == 0){return a.getName().compareTo(b.getName());}else{return a.getSurname().compareTo(b.getSurname());}
         };
@@ -160,11 +224,11 @@ public class University{
         Set<Teacher> teachers = new TreeSet<Teacher>(c);
         teachers.addAll(this.teachers);
         return teachers;
-    } 
+    }*/
     
-    public Set<Course> getCoursesOrderdByID(){return courses;}
+    // public Set<Course> getCoursesOrderdByID(){return courses;}
 
-    public Set<Course> getCoursesOrderedByName(){
+    /*public Set<Course> getCoursesOrderedByName(){
         Comparator<Course> c = (a, b) -> {
             return a.getName().compareTo(b.getName());
         };
@@ -172,7 +236,7 @@ public class University{
         Set<Course> courses = new TreeSet<Course>(c);
         courses.addAll(this.courses);
         return courses;
-    }
+    }*/
 
     // metodi ereditati
     // toString è il metodo che viene chiamato quando si prova a stampare l'oggetto ---> sovrascrivibile tra noi tramite @Override

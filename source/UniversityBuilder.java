@@ -1,11 +1,13 @@
 package source;
 
-import customExp.*;
+//import customExp.*;
+
+// ADATTATO A PRIMA DELL'AGGIUNTA DI EXAM
 
 // questa classe fornirà un FLUENT BUILDER per le università 
 public class UniversityBuilder{
     // attributi dinamici
-    University university;
+    /*University university;
 
     // costruttori
     public UniversityBuilder(){university = new University();}
@@ -62,5 +64,5 @@ public class UniversityBuilder{
         return this;
     }
 
-    public University getUniversity(){return university;}
+    public University getUniversity(){return university;}*/
 }

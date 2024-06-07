@@ -1,13 +1,15 @@
 package source;
 
-import customExp.*;
+import java.util.function.Consumer;
+
+// import customExp.*;
 
 public class Main{
     // I metodi statici non sono legati a nessuna istanza, permettono di non generare un oggetto solo per utilizzare un metodo, sono accessibili solo utilizzando la classe 
     // ---> Utility.inverse(10). E' possibile importare tutti gli oggetti statici di una classe --> import static package.Utility.* 
     public static void main(String[] args){
         // l'operatore NEW mi permette di creare un nuovo oggetto di tipo University
-        //University uni = new University("Politecnico di Torino");
+        University uni = new University("Politecnico di Torino");
 
         // System.out.println(uni.getName());
         // o, avendo modificato toString
@@ -85,5 +87,31 @@ public class Main{
 
         System.out.println(university.getTeachersOrderedByName());*/
 
+
+
+        // STREAM
+        /*try{
+            uni.studentEnroll(p1); uni.studentEnroll(p2);
+            uni.teacherEnroll(p3); uni.teacherEnroll(p4); uni.teacherEnroll(p5);
+            uni.courseEnroll("Basi di dati", true, false); uni.courseEnroll("Fisica I", true, true); uni.courseEnroll("Big Data", false, true);
+            // uni.getStudentsOrderedByID().forEach(System.out::println); // System.out::println è il mio CONSUMER
+            // utilizziamo un CONSUMER creato da noi
+            Consumer<Student> c = a -> System.out.println(a);
+            uni.getStudentsOrderedByID().forEach(c);
+        }catch(StudentExp se){ // costrutto TRY{}CATCH{} con molteplici CATCH se ci sono più eccezioni la prima sarà considerata --> in questo caso ogni eccezione è troppo specifica
+                              // per essere gestita in questo modo ma si tratta di un esempio [un eccezione in Student blocca completamente anche le altre operazioni!!]
+            System.out.println(se);
+        }catch(TeacherExp te){
+            System.out.println(te);
+        }catch(CourseExp ce){
+            System.out.println(ce);
+        }*/
+
+        uni.studentEnroll(p1); uni.studentEnroll(p2);
+        uni.courseEnroll("Basi di dati", true, false); uni.courseEnroll("Fisica I", true, true); uni.courseEnroll("Big Data", false, true);
+        uni.associateStudentToCourse(1000, 10);
+        uni.associateStudentToCourse(1001, 11);
+        uni.setStudentGrade(1000, 10, 19);
+        System.out.println(uni.getStudentGrade(1000, 10));
     }
 }

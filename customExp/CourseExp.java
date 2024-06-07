@@ -7,7 +7,7 @@ public class CourseExp extends Exception{
 
     public CourseExp(String msg, Course c){
         super(msg);
-        if(course == null){course = new Course("NO COURSE", -1);}
+        if(course == null){course = new Course("NO COURSE", -1, false, false);}
         else{course = c;}
     }
 
