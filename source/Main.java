@@ -113,5 +113,10 @@ public class Main{
         uni.associateStudentToCourse(1001, 11);
         uni.setStudentGrade(1000, 10, 19);
         System.out.println(uni.getStudentGrade(1000, 10));
+
+        uni.writeStudentsOnFileStr();
+        uni.writeStudentsOnFileObj();
+        uni.readStudentOnFileStr();
+        uni.readStudentOnFileObj();
     }
 }

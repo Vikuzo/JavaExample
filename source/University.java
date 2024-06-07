@@ -1,6 +1,9 @@
 // packages
 package source; // package del mio workspace, per invocare package esterni devo importarli ---> import packageName.className (se voglio specificare) --> * per intendere tutto
 
+import java.io.*; // libreria per input output
+import java.nio.charset.Charset;
+import java.nio.file.*; // java new input output
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -140,6 +143,82 @@ public class University{
                                     // .flatMap() permette di ridurre lo stream di una COLLECTION allo stream degli elementi che la compongono Stream<Colletcion<Student>> --> Stream<Student>
                                     // il successivo .map() mappa i miei SINGOLI elementi nel nome del metodo getName Stream<Student> --> Stream<String>
         courses.stream().map(Course::getStudents).flatMap(Set::stream).map(Student::getName).forEach(System.out::println);
+    }
+
+    // è preferibile utilizzare le versioni BUFFERED in quanto non scrivono direttamente sul file ogni volta ma lo fanno raggiunto un certo numero di elementi nel buffer,
+    // richiede meno risorse come approccio
+    public void writeStudentsOnFileStr(){
+        Path path = Path.of("files/students.txt"); // istruzione per ottenere il percorso del mio file students.txt
+        try{
+            Writer w = new OutputStreamWriter(new FileOutputStream(path.toString()), "ISO-8859-1"); // il write in questo modo elimina tutto ciò presente in un file prima di iniziare a scrivere
+                                                                                                                // non è aperto in append
+            /*for(String name: students.stream().map(Student::getName).toList()) // tramite STREAM
+                w.write(name + "\n");
+            w.close();*/
+
+            for(Student student: students){ // senza STREAM
+                w.write(student.getName() + "\n");
+            }
+            w.close();
+        }catch(IOException ioe){ // possono essere generate EXCEPTION che ereditano tutte da IOException
+            System.out.println(ioe);
+        }        
+    }
+
+    public void writeStudentsOnFileObj(){ // OutputStream con serializzazione, per scrivere su file direttamente degli oggetti
+        Path path = Path.of("files/students.ser");
+
+        try{
+            ObjectOutputStream w = new ObjectOutputStream(new FileOutputStream(path.toString())); // non c'è bisogno di specificare la modalità di encoding
+            
+            for(Student student: students){
+                w.writeObject(student);
+            }
+
+            w.close();
+        }catch(IOException ioe){ // possono essere generate EXCEPTION che ereditano tutte da IOException
+            System.out.println(ioe);
+        }  
+    }
+
+    public void readStudentOnFileStr(){
+        Path path = Path.of("files/students.txt");
+
+        try{
+            BufferedReader r = new BufferedReader(new FileReader(path.toString(), Charset.forName("ISO-8859-1"))); // vuole per forza un OGGETTO di tipo CHARSET
+            while(true){
+                String s = r.readLine();
+                if(s == null)
+                    break;
+                System.out.println(s);
+            }
+
+            r.close();
+        }catch(IOException ioe){
+            System.out.println(ioe);
+        }
+    }
+
+    public void readStudentOnFileObj(){
+        Path path = Path.of("files/students.ser");
+
+        try{
+            ObjectInputStream r = new ObjectInputStream(new FileInputStream(path.toString()));
+            while(true){
+                Student s = (Student)r.readObject(); // non troverò i dati di nomi e congnomi in quanto essi appartegono alla classe PERSON!!
+                                                    // devo rendere SERIALIZABLE la super classe!
+                if(s == null)
+                    break;
+                System.out.println(s);
+            }
+
+            r.close();
+        }catch(EOFException ef){
+        }catch(IOException ioe){
+            System.out.println(ioe);
+        }catch(ClassNotFoundException cn){
+            System.out.println(cn);
+        }
     }
 
     // getters e setters

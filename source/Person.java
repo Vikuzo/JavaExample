@@ -1,8 +1,10 @@
 package source;
 
+import java.io.Serializable;
+
 // Sarà la nostra classe madre per Studenti e Insegnanti, non sarà un'interfaccia in quanto molti dei metodi sono in realtà già implementabili ---> non sarà un'interfaccia
 // Se non si specifica nessuna classe madre da cui ereditare in automatico la nostra classe erediterà dalla classe OBJECT ---> ad esemprio @Override di toSring()
-public class Person{ // avrei potuto dichiarare la classe come ABSTRACT ma non avrei potuto istanziare nessuno oggetto a partire da questa classe, con ---> PUBLIC ABSTRACT CLASS PERSON
+public class Person implements Serializable{ // avrei potuto dichiarare la classe come ABSTRACT ma non avrei potuto istanziare nessuno oggetto a partire da questa classe, con ---> PUBLIC ABSTRACT CLASS PERSON
                     // deve essere solo parzialmente non implementate ---> ci sono le INTERFACCE per classi che non implementano nulla
     // attributi dinamici della classe
     private String name;

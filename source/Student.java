@@ -1,8 +1,10 @@
 package source;
 
+//import java.io.Serializable;
+
 // la keyword per l'ereditarietà è EXTENDS ---> IMPLEMENTS per le interfacce. Non possiamo ereditare più da più di un'altra classe ma possiamo implementare molteplici interfacce
 // COMPARABLE è un'interfaccia di tipo GENERIC ---> devo necessariamente specificare il tipo <TIPO>
-public class Student extends Person implements Comparable<Object>{
+public class Student extends Person implements Comparable<Object>/* , Serializable*/{ // Serializable è necessario per scrivere l'oggetto su file
     // costanti
     private final int studentID;
 
